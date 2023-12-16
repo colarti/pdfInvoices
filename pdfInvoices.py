@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 filepaths = glob.glob('excel/*xlsx') #grab all xlsx files in the excel file
-print(filepaths)
+# print(filepaths)
 
 # for item in os.listdir('.\\excel'): #option 1
 for item in filepaths:  #option 2
@@ -31,12 +31,12 @@ for item in filepaths:  #option 2
     pdf.ln(20)
 
 
-    sum = 0     #sum of total price
+    # sum = 0     #sum of total price OPTION 1
     # #creating the table from the excel file
     headers = list(df.columns)
     # headers = [header.replace('_', ' ').title() for header in headers]  #another option using list comprehension
 
-    print(f'headers:{headers}')
+    # print(f'headers:{headers}')
     pdf.set_font(family='Times', size=10, style='B')
     # pdf.cell(w=23, h=10, border=True, align='C', txt='Product Id')
     # pdf.cell(w=50, h=10, border=True, align='C', txt='Product Name')
@@ -59,16 +59,21 @@ for item in filepaths:  #option 2
         pdf.cell(w=30, h=10, border=True, align='C', txt=f'{row["amount_purchased"]}')
         pdf.cell(w=30, h=10, border=True, align='C', txt=f'{row["price_per_unit"]}')
         pdf.cell(w=35, h=10, border=True, align='C', txt=f'{row["total_price"]}', ln=1)
-        sum += float(row['total_price'])
+        # sum += float(row['total_price'])
     
-    
-    pdf.ln(40)
-    pdf.set_font(family='Times', size=20)
-    pdf.cell(w=0, h=16, txt=f'Thank you for your purchase, your TOTAL: ${sum}', border=0, align='L', ln=1)
+    pdf.set_font(family='Times', style='BI', size=16)
+    pdf.cell(w=133, h=8, txt='Total', border=0, align='R')
+    pdf.set_text_color(254, 254, 254)
+    pdf.cell(w=35, h=8, txt=f'{df["total_price"].sum():.2f}', border=1, align='C', fill=True, ln=1)
+
+    pdf.ln(30)
+    pdf.set_font(family='Times', size=20, style='B')
+    pdf.set_text_color(0,0,0)
+    pdf.cell(w=0, h=16, txt=f'Thank you for your purchase, your TOTAL: ${df["total_price"].sum():.2f}', border=0, align='L', ln=1)
     pdf.ln(5)
     pdf.set_font(family='Times', style='BI')
-    pdf.cell(w=0, h=20, border=0, txt='** ECMO Corp **')
-    
+    pdf.cell(w=60, h=20, border=0, txt='** ECMO Corp **')
+    pdf.image('pythonhow.png', w=15)
 
     pdf.output(f'.\\invoices\\{filename}.pdf')
 
