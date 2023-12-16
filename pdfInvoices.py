@@ -27,14 +27,48 @@ for item in filepaths:  #option 2
 
     pdf.cell(w=50, h=8, txt=f'Invoice nr.{filename}', ln=1)
     # pdf.cell(w=50, h=8, txt=f'Date {time.strftime("%Y.%m.%d")}')    #option 1
-    pdf.cell(w=50, h=8, txt=f'Date: {date}', align='L', ln=2)
+    pdf.cell(w=50, h=8, txt=f'Date: {date}', align='L', ln=1)
+    pdf.ln(20)
 
-    
 
+    sum = 0     #sum of total price
+    # #creating the table from the excel file
+    headers = list(df.columns)
+    # headers = [header.replace('_', ' ').title() for header in headers]  #another option using list comprehension
 
-    pdf.output(f'.\\invoices\\{filename}.pdf')
+    print(f'headers:{headers}')
+    pdf.set_font(family='Times', size=10, style='B')
+    # pdf.cell(w=23, h=10, border=True, align='C', txt='Product Id')
+    # pdf.cell(w=50, h=10, border=True, align='C', txt='Product Name')
+    # pdf.cell(w=30, h=10, border=True, align='C', txt='Count')
+    # pdf.cell(w=30, h=10, border=True, align='C', txt='Price Per Unit')
+    # pdf.cell(w=35, h=10, border=True, align='C', txt='Total Price', ln=1)
+
+    pdf.cell(w=23, h=10, border=True, align='C', txt=headers[0].replace('_', ' ').title())
+    pdf.cell(w=50, h=10, border=True, align='C', txt=headers[0].replace('_', ' ').title())
+    pdf.cell(w=30, h=10, border=True, align='C', txt=headers[0].replace('_', ' ').title())
+    pdf.cell(w=30, h=10, border=True, align='C', txt=headers[0].replace('_', ' ').title())
+    pdf.cell(w=35, h=10, border=True, align='C', txt=headers[0].replace('_', ' ').title(), ln=1)
 
     for idx, row in df.iterrows():
-        print(f'idx:{idx}\tProduct Id:{row["product_id"]}]\tProduct Name:{row["product_name"]}\tAmt Purchased:{row["amount_purchased"]} \
-              \tPrice Per Unit: {row["price_per_unit"]}\tTotal Price:{row["total_price"]}')
+        pdf.set_font(family='Times', size=10, style='B')
+        pdf.set_text_color(0,0,0)
+        
+        pdf.cell(w=23, h=10, border=True, align='C', txt=f'{row["product_id"]}')
+        pdf.cell(w=50, h=10, border=True, align='C', txt=f'{row["product_name"]}')
+        pdf.cell(w=30, h=10, border=True, align='C', txt=f'{row["amount_purchased"]}')
+        pdf.cell(w=30, h=10, border=True, align='C', txt=f'{row["price_per_unit"]}')
+        pdf.cell(w=35, h=10, border=True, align='C', txt=f'{row["total_price"]}', ln=1)
+        sum += float(row['total_price'])
+    
+    
+    pdf.ln(40)
+    pdf.set_font(family='Times', size=20)
+    pdf.cell(w=0, h=16, txt=f'Thank you for your purchase, your TOTAL: ${sum}', border=0, align='L', ln=1)
+    pdf.ln(5)
+    pdf.set_font(family='Times', style='BI')
+    pdf.cell(w=0, h=20, border=0, txt='** ECMO Corp **')
+    
+
+    pdf.output(f'.\\invoices\\{filename}.pdf')
 
